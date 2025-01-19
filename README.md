@@ -11,7 +11,7 @@ a -> b => T(a) < T(b)
 ```
 
 # The Node Class
-The Node class is a Subclass of `multiprocessing.Process` it implements a run method which is a statemachine. This statemachine can be in 3 states
+The Node class is a Subclass of `multiprocessing.Process` it implements a run method which is a statemachine. This statemachine can be in 3 states. It is also fully connected to every other node in the system.
 
 `INTERNAL`
 - Internal Events are just that, they don't effect the larger system but the increment a node's logical clock
@@ -37,3 +37,8 @@ def __init__(self, node_id: str, max_messages: int, queue_map: Dict[str, "mp.Que
 
 `log_queue: mp.Queue[str] `
 - the sink for all of a nodes events to be streamed
+
+
+# Node Manager
+This class acts as an interface between the web server and the distributed system. It owns the control methods and the `log_queue` that can spin up a series of processes and clean them up. It also exposes an AsyncGenerator that the webserver uses to stream text to the client.
+
