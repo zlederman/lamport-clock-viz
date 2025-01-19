@@ -1,0 +1,13 @@
+[project]
+name = "clocks"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115.6",
+    "loguru>=0.7.3",
+    "redis>=5.2.1",
+    "types-redis>=4.6.0.20241004",
+    "uvicorn[standard]>=0.34.0",
+]
