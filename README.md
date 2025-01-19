@@ -13,9 +13,14 @@ a -> b => T(a) < T(b)
 # The Node Class
 The Node class is a Subclass of `multiprocessing.Process` it implements a run method which is a statemachine. This statemachine can be in 3 states
 
-INTERNAL: Internal Events are just that, they don't effect the larger system but the increment a node's logical clock
-SEND: Send Events fire an event to another Node with the timestamp equal to the current time
-RECV: Receive events are events that trigger a Node to read from its message queue and evaluate the timestamp of this message. The Lamport implementation is `max(T(Send_Message), Current_Time)`
+`INTERNAL`
+- Internal Events are just that, they don't effect the larger system but the increment a node's logical clock
+
+`SEND`
+- Send Events fire an event to another Node with the timestamp equal to the current time
+
+`RECV`
+- Receive events are events that trigger a Node to read from its message queue and evaluate the timestamp of this message. The Lamport implementation is `max(T(Send_Message), Current_Time)`
 
 The node class accepts a few params to its constructor:
 ```
