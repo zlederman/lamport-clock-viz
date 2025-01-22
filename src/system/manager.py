@@ -42,7 +42,7 @@ class NodeManager:
                 node.join(timeout=1)
                 if node.is_alive():
                     node.terminate()
-        
+        self.nodes = []
 
         for queue in self.queue_map.values():
             while not queue.empty():
@@ -50,12 +50,14 @@ class NodeManager:
                     queue.get_nowait()
                 except:
                     pass
-        
+        self.queue_map = {}
+        # drain queue
         while not self.log_queue.empty():
             try:
                 self.log_queue.get_nowait()
             except:
                 pass
+
     
     async def get_logs(self) -> AsyncGenerator[str]:
         while any(node.is_alive() for node in self.nodes):
