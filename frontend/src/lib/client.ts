@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const ENDPOINT = import.meta.env.ENDPOINT
+export const ENDPOINT = import.meta.env.BASE_URL
 
 export const client = axios.create({
 	baseURL: ENDPOINT
