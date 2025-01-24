@@ -223,6 +223,8 @@
 	.container {
 		border: 1px solid black;
 		padding: 40px 20px;
+		overflow: auto;
+		max-width: 80vw;
 	}
 	.graph {
 		position: relative;
