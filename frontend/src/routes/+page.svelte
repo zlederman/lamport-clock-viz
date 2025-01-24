@@ -6,7 +6,7 @@
 	let nodes: string[] = $state([]);
 
 	let messages: NodeMessage[] = $state([]);
-
+	let edgeLabels: boolean = $state(false)
 	//let poll = $state(false);
 
 	$inspect(messages);
@@ -54,7 +54,6 @@
 				<button
 					onclick={async () => {
 						await cleanup();
-
 						messages = [];
 						nodes = [];
 					}}>Cleanup</button
@@ -93,6 +92,13 @@
 						bind:value={messageSpacing}
 					/>
 				</div>
+				<div class="opt">
+					<label for="el">Show Edge Labels</label>
+					<select bind:value={edgeLabels}>
+						<option value={true}>True</option>
+						<option value={false}>False</option>
+					</select>
+				</div>
 			</div>
 		</div>
 
@@ -107,7 +113,10 @@
 
 		<div class="graph">
 			<h2>Graph</h2>
-			<Graph {nodes} {messages} {swimlaneSpacing} {nodeRadius} {messageSpacing} />
+			<Graph {nodes} {messages} {swimlaneSpacing} {nodeRadius} {messageSpacing} {edgeLabels} />
+		</div>
+		<div class="credits">
+			Brought to you By @dsgallups and @zlederman
 		</div>
 		<div class="messages">
 			<h2>Messages:</h2>

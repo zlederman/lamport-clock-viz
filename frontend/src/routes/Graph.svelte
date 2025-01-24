@@ -7,9 +7,10 @@
 		swimlaneSpacing: number;
 		nodeRadius: number;
 		messageSpacing: number;
+		edgeLabels: boolean
 	}
 
-	let { nodes, messages, swimlaneSpacing: spacing, messageSpacing, nodeRadius }: Props = $props();
+	let { nodes, messages, swimlaneSpacing: spacing, messageSpacing, nodeRadius, edgeLabels }: Props = $props();
 
 	type SwimlaneProps = {
 		y: number;
@@ -203,6 +204,7 @@
 		<!-- Arrows -->
 		{#each arrows as arrow}
 			{@const dbg = arrow.dbg}
+
 			<div
 				class="arrow"
 				style:left={arrow.from.x + 'px'}
@@ -210,7 +212,9 @@
 				style:width={arrow.length + 'px'}
 				style:transform={`rotate(${arrow.angle}deg)`}
 			>
-				({dbg.from}:{dbg.frid}) => ({dbg.to}:{dbg.toid})
+				{#if edgeLabels}
+					({dbg.from}:{dbg.frid}) => ({dbg.to}:{dbg.toid})
+				{/if}
 			</div>
 		{/each}
 

@@ -1,4 +1,5 @@
 import asyncio
+import random
 from typing import AsyncGenerator, Dict, List
 import multiprocessing as mp
 
@@ -13,15 +14,21 @@ class NodeManager:
         self.log_queue: "mp.Queue[str]" = mp.Queue()
         self.queue_map: Dict[str, mp.Queue] = {}
         
+    def generate_id(self, length:int = 4) -> str:
+        chars = 'abcdefghijkmnpqrstuvwxyz23456789'
+        return ''.join(random.choice(chars) for _ in range(length))
+    
     def setup_nodes(self, num_nodes: int, max_messages: int) -> List[str]:
         # Create queues for each node
+        node_ids = []
         for i in range(num_nodes):
-            node_id = f"node_{i}"
+            node_id = self.generate_id()
+            node_ids.append(node_id)
             self.queue_map[node_id] = mp.Queue()
         
         # Create and start nodes
         for i in range(num_nodes):
-            node_id = f"node_{i}"
+            node_id = node_ids[i]
             node = Node(
                 node_id=node_id,
                 max_messages=max_messages,
