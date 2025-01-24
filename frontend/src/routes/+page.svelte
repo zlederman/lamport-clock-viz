@@ -51,7 +51,7 @@
 						start();
 					}}>Start</button
 				>
-				<button onclick={() => cleanup()}>Cleanup (does nothing)</button>
+				<button onclick={() => cleanup()}>Cleanup</button>
 			</div>
 
 			<div class="config">

@@ -32,6 +32,7 @@
 	type MessageNode = {
 		nodeId: string;
 		msgTo?: string;
+		msgFrom?: string;
 		idForSwimlane: number;
 		x: number;
 		y: number;
@@ -70,6 +71,7 @@
 			messageNodes.push({
 				nodeId: message.node_id,
 				msgTo: message.msg_to,
+				msgFrom: message.msg_from,
 				idForSwimlane: counts[message.node_id],
 				x,
 				y,
@@ -98,7 +100,7 @@
 	const arrows = $derived.by((): ArrowProps[] => {
 		let arrows: ArrowProps[] = [];
 
-		let sp: Record<string, number> = {};
+		let takenNodes: Record<string, number[]> = {};
 
 		for (let i = 0; i < messageNodes.length; i++) {
 			const node = messageNodes[i]!;
@@ -113,17 +115,26 @@
 			let to;
 			for (let j = i + 1; j < messageNodes.length; j++) {
 				const receiver = messageNodes[j]!;
-				if (receiver.nodeId !== node.msgTo || receiver.eventType !== 'RECV') {
+				if (
+					receiver.nodeId !== node.msgTo ||
+					receiver.eventType !== 'RECV' ||
+					receiver.msgFrom !== node.nodeId
+				) {
 					continue;
 				}
 				// check sp to ensure that this node doesn't already have a receiver, and set it to this node
-				let lastTaken = sp[receiver.nodeId];
-				if (lastTaken !== undefined && lastTaken >= j) {
-					//means that this node is already taken
+				let taken = takenNodes[receiver.nodeId];
+
+				if (taken === undefined) {
+					takenNodes[receiver.nodeId] = [receiver.idForSwimlane];
+				} else if (taken.findIndex((p) => p === receiver.idForSwimlane) !== -1) {
+					//this node is already taken
 					continue;
+				} else {
+					// add to taken
+					taken.push(receiver.idForSwimlane);
 				}
 
-				sp[receiver.nodeId] = j;
 				to = {
 					node: receiver.nodeId,
 					sid: receiver.idForSwimlane,
