@@ -4,20 +4,16 @@
 	interface Props {
 		nodes: string[];
 		messages: NodeMessage[];
+		swimlaneSpacing: number;
+		nodeRadius: number;
+		messageSpacing: number;
 	}
 
-	let { nodes, messages }: Props = $props();
+	let { nodes, messages, swimlaneSpacing: spacing, messageSpacing, nodeRadius }: Props = $props();
 
 	type SwimlaneProps = {
 		y: number;
 	};
-
-	const spacing = 80;
-
-	const graphHeight = $derived(spacing * Math.max(nodes.length - 1, 0) + 'px');
-
-	//todo: derive
-	const graphWidth = '600px';
 
 	const swimlanes = $derived.by((): Record<string, SwimlaneProps> => {
 		const props: Record<string, SwimlaneProps> = {};
@@ -31,8 +27,6 @@
 		return props;
 	});
 
-	$inspect('swimlanes: ', swimlanes);
-
 	//const messageNode
 
 	type MessageNode = {
@@ -43,8 +37,6 @@
 		y: number;
 		eventType: EventType;
 	};
-	const messageSpacing = 20;
-	const nodeRadius = 5;
 
 	function getNodeColor(eventType: EventType): string {
 		if (eventType === 'INTERNAL') {
@@ -126,17 +118,18 @@
 				}
 				// check sp to ensure that this node doesn't already have a receiver, and set it to this node
 				let lastTaken = sp[receiver.nodeId];
-				if (lastTaken === undefined) {
-					sp[receiver.nodeId] = j;
-				} else if (lastTaken >= j) {
+				if (lastTaken !== undefined && lastTaken >= j) {
 					//means that this node is already taken
 					continue;
 				}
+
+				sp[receiver.nodeId] = j;
 				to = {
 					node: receiver.nodeId,
 					sid: receiver.idForSwimlane,
-					x: receiver.x,
-					y: receiver.y
+					x: receiver.x + nodeRadius,
+
+					y: receiver.y + nodeRadius
 				};
 
 				break;
@@ -148,28 +141,44 @@
 			}
 
 			const from = {
-				x: node.x,
-				y: node.y
+				x: node.x + nodeRadius,
+				y: node.y + nodeRadius
 			};
 
 			const length = Math.hypot(to.x - from.x, to.y - from.y);
 			const angle = Math.atan2(to.y - from.y, to.x - from.x) * (180 / Math.PI);
 
+			const dbg = {
+				from: node.nodeId,
+				frid: node.idForSwimlane,
+
+				to: to.node,
+				toid: to.sid
+			};
+
 			arrows.push({
 				length,
 				angle,
 				from,
-				dbg: {
-					from: node.nodeId,
-					frid: node.idForSwimlane,
-
-					to: to.node,
-					toid: to.sid
-				}
+				dbg
 			});
 		}
 
 		return arrows;
+	});
+
+	const graphHeight = $derived(spacing * Math.max(nodes.length - 1, 0) + 'px');
+
+	//todo: derive
+	const graphWidth = $derived.by(() => {
+		const defWidth = 600;
+		if (messageNodes.length === 0) {
+			return defWidth + 'px';
+		}
+
+		let lastNode = messageNodes[messageNodes.length - 1];
+
+		return Math.max(lastNode.x, defWidth) + 'px';
 	});
 </script>
 
@@ -178,6 +187,20 @@
 		<!-- Swimlanes -->
 		{#each Object.entries(swimlanes) as [node, props]}
 			<div class="lane" style:top={props.y + 'px'}>{node}</div>
+		{/each}
+
+		<!-- Arrows -->
+		{#each arrows as arrow}
+			{@const dbg = arrow.dbg}
+			<div
+				class="arrow"
+				style:left={arrow.from.x + 'px'}
+				style:top={arrow.from.y + 'px'}
+				style:width={arrow.length + 'px'}
+				style:transform={`rotate(${arrow.angle}deg)`}
+			>
+				({dbg.from}:{dbg.frid}) => ({dbg.to}:{dbg.toid})
+			</div>
 		{/each}
 
 		<!-- Nodes -->
@@ -191,18 +214,6 @@
 				style:left={messageNode.x + 'px'}
 			>
 				{messageNode.idForSwimlane}
-			</div>
-		{/each}
-		{#each arrows as arrow}
-			{@const dbg = arrow.dbg}
-			<div
-				class="arrow"
-				style:left={arrow.from.x + 'px'}
-				style:top={arrow.from.y + 'px'}
-				style:width={arrow.length + 'px'}
-				style:transform={`rotate(${arrow.angle}deg)`}
-			>
-				({dbg.from}:{dbg.frid}) => ({dbg.to}:{dbg.toid})
 			</div>
 		{/each}
 	</div>
@@ -239,5 +250,6 @@
 		height: 2px;
 		background-color: green;
 		transform-origin: 0 0;
+		font-size: 10px;
 	}
 </style>
