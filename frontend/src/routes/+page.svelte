@@ -55,15 +55,15 @@
 		</div>
 	{/if}
 
-	<div class="messages">
-		<h2>Messages:</h2>
-		{#each messages as message}
-			<div class="message">{message}</div>
-		{/each}
-	</div>
 	<div class="graph">
 		<h2>Graph</h2>
 		<Graph {nodes} {messages} />
+	</div>
+	<div class="messages">
+		<h2>Messages:</h2>
+		{#each messages as message}
+			<div class="message">{JSON.stringify(message)}</div>
+		{/each}
 	</div>
 </div>
 

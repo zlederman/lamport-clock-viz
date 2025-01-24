@@ -15,7 +15,7 @@ export type NodeMessage = {
 	node_id: string;
 	timestamp: number;
 	event_type: EventType;
-	msg_to: string;
+	msg_to?: string;
 };
 
 export async function create(request: CreateRequest): Promise<CreateResponse> {
