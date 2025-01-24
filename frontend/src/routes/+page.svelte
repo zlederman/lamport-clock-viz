@@ -116,7 +116,7 @@
 			<Graph {nodes} {messages} {swimlaneSpacing} {nodeRadius} {messageSpacing} {edgeLabels} />
 		</div>
 		<div class="credits">
-			Brought to you By @dsgallups and @zlederman
+			Brought to you by: @dsgallups and @zlederman
 		</div>
 		<div class="messages">
 			<h2>Messages:</h2>
