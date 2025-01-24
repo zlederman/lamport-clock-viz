@@ -51,7 +51,14 @@
 						start();
 					}}>Start</button
 				>
-				<button onclick={() => cleanup()}>Cleanup</button>
+				<button
+					onclick={async () => {
+						await cleanup();
+
+						messages = [];
+						nodes = [];
+					}}>Cleanup</button
+				>
 			</div>
 
 			<div class="config">
