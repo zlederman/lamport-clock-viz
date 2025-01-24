@@ -9,19 +9,20 @@
 
 	//let poll = $state(false);
 
+	$inspect(messages);
+
 	function start() {
 		const eventSource = new EventSource(ENDPOINT + '/system/start');
 
 		eventSource.onmessage = (event) => {
-			console.log('Event received', event);
+			messages.push(JSON.parse(event.data));
 		};
 
-		eventSource.onerror = function (error) {
-			console.error('Error occurred:', error);
+		eventSource.onerror = () => {
 			eventSource.close();
 		};
 
-		eventSource.onopen = function () {
+		eventSource.onopen = () => {
 			console.log('Connection established');
 		};
 
